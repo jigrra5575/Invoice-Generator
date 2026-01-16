@@ -1,0 +1,53 @@
+﻿@model IEnumerable<InvoiceApplication.Models.ErrorHandaling>
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1>Error</h1>
+
+<p>
+    <a asp-action="Index">Go To List</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorMessage)
+            </th>
+            @* <th></th> *@
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr style="height : 150px; overflow-y : auto;">
+            <td>
+                @Html.DisplayFor(modelItem => item.ErrorId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ErrorTime)
+            </td>
+            <td style="overflow-y : scroll; height: 20px;">
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ErrorMessage)
+            </td>
+            @* <td>
+                <a asp-action="Edit" asp-route-id="@item.ErrorId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ErrorId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ErrorId">Delete</a>
+            </td> *@
+        </tr>
+}
+    </tbody>
+</table>

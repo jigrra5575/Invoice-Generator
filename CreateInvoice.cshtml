@@ -1,0 +1,524 @@
+﻿@model InvoiceApplication.Models.Invoice_Table
+
+@{
+    ViewData["Title"] = "CreateInvoice";
+}
+<style>
+    .alert {
+        width: fit-content;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 8s ease-in forwards;
+    }
+
+    .bigbutton:hover {
+        animation: scaleeffect 0.5s ease-in forwards;
+    }
+
+    @@keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        25% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        100% {
+            opacity: 0;
+            display: none;
+            transform: translateX(-20px);
+        }
+    }
+
+    @@keyframes scaleeffect {
+        from {
+            transform: scale(1);
+        }
+
+        to {
+            transform: scale(0.9);
+        }
+    }
+</style>
+
+
+<div class="d-flex justify-content-between">
+    <h1 class="align-content-center w-25 ">CreateInvoice</h1>
+
+    <h4 class="align-content-center w-25 text-center">Invoice_Table</h4>
+
+    <a asp-action="Index" class="btn btn-primary m-3 w-25 bigbutton">Cancel</a>
+</div>
+<hr />
+
+@if (ViewBag.ErrorMessage != "" && ViewBag.ErrorMessage != null)
+{
+    <div class="position-absolute top-50 start-0">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Error </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @ViewBag.ErrorMessage <small><inpiut id="currenttime" readonly /></small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="row w-100">
+    <div class="col-md-12">
+        <form asp-action="CreateInvoice">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group w-25">
+                <label asp-for="Invoice_Date" class="control-label"></label>
+                <input asp-for="Invoice_Date" type="date" class="form-control bigbutton" />
+                <span asp-validation-for="Invoice_Date" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <div class="form-group my-2 p-2 border w-50 shippingimg">
+                    <h4 class="text-center  text-black-50">Billing Address </h4>
+                    <div class="d-flex flex-column">
+                        <div class="form-group">
+                            <label asp-for="Billing_Name" class="control-label"></label>
+                            <input spellcheck="false" asp-for="Billing_Name" class="form-control" />
+                            <span asp-validation-for="Billing_Name" class="text-danger"></span>
+                        </div>
+                        <div>
+                            <label asp-for="BillingAddress_Address" class="control-label">Address</label>
+                            <textarea spellcheck="false" asp-for="BillingAddress_Address" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div>
+                            <label asp-for="BillingAddress_State" class="control-label">State : </label>
+                            <select id="BillState" asp-for="BillingAddress_State" class="form-control">
+                                <option value=""> --    select state    --</option>
+
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="BillingAddress_City" class="control-label">City : </label>
+                            <select id="BillCity" asp-for="BillingAddress_City" class="form-control"></select>
+                        </div>
+                        <div>
+                            <label asp-for="BillingAddress_Phone" class="control-label">Contact : </label>
+                            <input asp-for="BillingAddress_Phone" maxlength="10" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group my-2 p-2 border w-50">
+                    <h4 class="text-center text-black-50">Shipping Address</h4>
+                    <div class="d-flex flex-column">
+                        <div class="form-group">
+                            <label asp-for="Shipping_Name" class="control-label"></label>
+                            <input spellcheck="false" asp-for="Shipping_Name" class="form-control" />
+                            <span asp-validation-for="Shipping_Name" class="text-danger"></span>
+                        </div>
+                        <div>
+                            <label asp-for="ShippingAddress_Address" class="control-label">Address : </label>
+                            <textarea spellcheck="false" asp-for="ShippingAddress_Address" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div>
+                            <label asp-for="ShippingAddress_State" class="control-label">State : </label>
+                            <select asp-for="ShippingAddress_State" id="ShipState" class="form-control">
+                                <option value=""> --    select state    --</option>
+
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="ShippingAddress_City" class="control-label"> City : </label>
+                            <select asp-for="ShippingAddress_City" id="ShipCity" class="form-control">
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="ShippingAddress_Phone" class="control-label">Contact : </label>
+                            <input asp-for="ShippingAddress_Phone" maxlength="10" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="ProductJson" name="ProductJson" />
+
+            <div class="form-group  d-flex flex-column my-2">
+                <label class="control-label">Product Add :</label>
+
+                <div class="d-flex flex-column border p-3">
+                    <div class="d-flex justify-content-between gap-2">
+                        <input type="text" id="ProductAdd" class="form-control" placeholder="Product Name" />
+                        <input type="number" id="Price" class="form-control" placeholder="Price" />
+                        <input type="number" id="Quantity" class="form-control" placeholder="Quantity" />
+                        <input type="number" id="TotalAmount" class="form-control" placeholder="Total Amount" readonly />
+
+                        <input type="button" class="btn btn-success mx-2 bigbutton" onclick="addproduct()" value="Add" />
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div>
+                <table class="table table-bordered" id="productTable">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price (₹)</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productBody"></tbody>
+                </table>
+            </div>
+
+
+            <div class="form-group my-3 text-center">
+                <input type="submit" value="Save" onclick="beforeSubmit()" class="btn btn-success bigbutton" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+
+        document.getElementById("currenttime").value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                function beforeSubmit() {
+                    let rows = document.querySelectorAll("#productBody tr");
+    
+                    let products = [];
+                    if(products.length < 0){
+                        alert("Need Minimum 1 products Atleast...")
+                        rerurn false;
+                    }
+                    rows.forEach(r => {
+                        products.push({
+                            Name: r.children[0].textContent,
+                            Price: r.children[1].textContent,
+                            Qty: r.children[2].textContent,
+                            Total: r.children[3].textContent
+                        });
+                    });
+
+                    document.getElementById("ProductJson").value = JSON.stringify(products);
+                }
+
+
+                const state_list = [
+            { state_id: 7, state_name: "Gujarat" },
+            { state_id: 11, state_name: "Karnataka" },
+            { state_id: 12, state_name: "Kerala" },
+            { state_id: 14, state_name: "Maharashtra" },
+            { state_id: 20, state_name: "Punjab" },
+            { state_id: 21, state_name: "Rajasthan" },
+            { state_id: 23, state_name: "Tamil Nadu" },
+            { state_id: 24, state_name: "Telangana" },
+            { state_id: 26, state_name: "Uttar Pradesh" },
+            { state_id: 28, state_name: "West Bengal" }
+        ];
+
+        const city_list = [
+            // Gujarat
+            { city_id: 1, city_state_id: 7, city_name: "Ahmedabad" },
+            { city_id: 2, city_state_id: 7, city_name: "Surat" },
+            { city_id: 3, city_state_id: 7, city_name: "Vadodara" },
+            { city_id: 4, city_state_id: 7, city_name: "Rajkot" },
+            { city_id: 5, city_state_id: 7, city_name: "Bhavnagar" },
+            { city_id: 6, city_state_id: 7, city_name: "Jamnagar" },
+            { city_id: 7, city_state_id: 7, city_name: "Gandhinagar" },
+
+            // Maharashtra
+            { city_id: 8, city_state_id: 14, city_name: "Mumbai" },
+            { city_id: 9, city_state_id: 14, city_name: "Pune" },
+            { city_id: 10, city_state_id: 14, city_name: "Nagpur" },
+            { city_id: 11, city_state_id: 14, city_name: "Nashik" },
+            { city_id: 12, city_state_id: 14, city_name: "Aurangabad" },
+
+            // Rajasthan
+            { city_id: 13, city_state_id: 21, city_name: "Jaipur" },
+            { city_id: 14, city_state_id: 21, city_name: "Udaipur" },
+            { city_id: 15, city_state_id: 21, city_name: "Jodhpur" },
+            { city_id: 16, city_state_id: 21, city_name: "Ajmer" },
+
+            // Uttar Pradesh
+            { city_id: 17, city_state_id: 26, city_name: "Lucknow" },
+            { city_id: 18, city_state_id: 26, city_name: "Kanpur" },
+            { city_id: 19, city_state_id: 26, city_name: "Varanasi" },
+            { city_id: 20, city_state_id: 26, city_name: "Agra" },
+            { city_id: 21, city_state_id: 26, city_name: "Noida" },
+
+            // Karnataka
+            { city_id: 22, city_state_id: 11, city_name: "Bengaluru" },
+            { city_id: 23, city_state_id: 11, city_name: "Mysuru" },
+            { city_id: 24, city_state_id: 11, city_name: "Mangaluru" },
+
+            // Tamil Nadu
+            { city_id: 25, city_state_id: 23, city_name: "Chennai" },
+            { city_id: 26, city_state_id: 23, city_name: "Coimbatore" },
+            { city_id: 27, city_state_id: 23, city_name: "Madurai" },
+
+            // Telangana
+            { city_id: 28, city_state_id: 24, city_name: "Hyderabad" },
+            { city_id: 29, city_state_id: 24, city_name: "Warangal" },
+
+            // West Bengal
+            { city_id: 30, city_state_id: 28, city_name: "Kolkata" },
+            { city_id: 31, city_state_id: 28, city_name: "Howrah" },
+
+            // Punjab
+            { city_id: 32, city_state_id: 20, city_name: "Amritsar" },
+            { city_id: 33, city_state_id: 20, city_name: "Ludhiana" },
+
+            // Kerala
+            { city_id: 34, city_state_id: 12, city_name: "Kochi" },
+            { city_id: 35, city_state_id: 12, city_name: "Thiruvananthapuram" }
+        ];
+
+        const ShipstateSelect = document.getElementById("ShipState");
+        const ShipcitySelect = document.getElementById("ShipCity");
+         const BillstateSelect = document.getElementById("BillState");
+        const BillcitySelect = document.getElementById("BillCity");
+
+        window.onload = function () {
+            loadStates1();
+            loadStates2();
+        };
+
+        function loadStates1() {
+            state_list.forEach(state => {
+                const option = document.createElement("option");
+                option.value = state.state_name;   // DB માં name save થશે
+                option.textContent = state.state_name;
+                ShipstateSelect.appendChild(option);
+            });
+        }
+
+        ShipstateSelect.addEventListener("change", function () {
+            const selectedStateName = this.value;
+
+            ShipcitySelect.innerHTML = `<option value="">-- Select City --</option>`;
+
+            const selectedState = state_list.find(s => s.state_name === selectedStateName);
+            if (!selectedState) return;
+
+            const filteredCities = city_list.filter(c => c.city_state_id === selectedState.state_id);
+
+            filteredCities.forEach(city => {
+                const option = document.createElement("option");
+                option.value = city.city_name;   // DB માં name save થશે
+                option.textContent = city.city_name;
+                ShipcitySelect.appendChild(option);
+            });
+        });
+
+
+        function loadStates2() {
+            state_list.forEach(state => {
+                const option = document.createElement("option");
+                option.value = state.state_name;   // DB માં name save થશે
+                option.textContent = state.state_name;
+                BillstateSelect.appendChild(option);
+            });
+        }
+
+        BillstateSelect.addEventListener("change", function () {
+            const selectedStateName = this.value;
+
+            BillcitySelect.innerHTML = `<option value="">-- Select City --</option>`;
+
+            const selectedState = state_list.find(s => s.state_name === selectedStateName);
+            if (!selectedState) return;
+
+            const filteredCities = city_list.filter(c => c.city_state_id === selectedState.state_id);
+
+            filteredCities.forEach(city => {
+                const option = document.createElement("option");
+                option.value = city.city_name;   // DB માં name save થશે
+                option.textContent = city.city_name;
+                BillcitySelect.appendChild(option);
+            });
+        });
+
+
+        // function addproduct(){
+
+        //     let productname = document.getElementById("ProductAdd").value;
+        //     let Quantity = document.getElementById("Quantity").value;
+        //     let Price = document.getElementById("Price").value;
+        //     let TotalAmount = document.getElementById("TotalAmount").value;
+
+
+        //     let li = document.createElement("li");
+        //     li.textContent = productname;
+        //     li.classList = "my-2  p-2";
+        //     li.innerHTML = `
+        //         Product Name : <strong>${productname}</strong> &nbsp;&nbsp;
+        //         Price: <strong>₹${Price}</strong> &nbsp; &nbsp;
+        //         Qty: <strong>${Quantity}</strong> &nbsp;&nbsp;
+        //         Total: <strong>₹${TotalAmount}</strong>
+        //     `;
+
+        //     let span = document.createElement("span");
+        //     span.textContent = productname;
+
+        //     let editbutton = document.createElement("button");
+        //     editbutton.textContent = "Edit";
+        //     editbutton.style.marginLeft = "10px";
+        //     editbutton.classList = "btn btn-warning btn-sm";
+        //     editbutton.onclick = function () {
+        //     let newName = prompt("Enter New-Name", span.textContent);
+        //     if (newName !== null && newName.trim() !== "")
+        //         {
+        //             span.textContent = newName;
+        //         }
+        //     };
+
+        //     let deletebutton = document.createElement("button");
+        //     deletebutton.textContent = "Remove";
+        //     deletebutton.style.marginLeft = "10px";
+        //     deletebutton.classList = "btn btn-danger btn-sm";
+        //     deletebutton.onclick = function () {
+        //         li.remove();
+        //     };
+
+        //     li.appendChild(span);
+        //     li.appendChild(editbutton);
+        //     li.appendChild(deletebutton);
+
+        //     document.getElementById("newproduct").appendChild(li);
+
+        //     document.getElementById("ProductAdd").value = "";
+        //     document.getElementById("Price").value = "";
+        //     document.getElementById("Quantity").value = "";
+        //     document.getElementById("TotalAmount").value = "";
+        // }
+
+        // document.getElementById("Price").addEventListener("input", calculateTotal);
+        // document.getElementById("Quantity").addEventListener("input", calculateTotal);
+
+        // function calculateTotal(){
+        //             let Quantity = document.getElementById("Quantity").value || 0 ;
+        //             let Price = document.getElementById("Price").value || 0 ;
+
+        //             document.getElementById("TotalAmount").value = Quantity * Price ;
+        // }
+
+             let currentTR = null;
+
+        function addproduct() {
+
+            let name = document.getElementById("ProductAdd").value;
+            let price = document.getElementById("Price").value;
+            let qty = document.getElementById("Quantity").value;
+            let total = document.getElementById("TotalAmount").value;
+
+            let tbody = document.getElementById("productBody");
+
+            let tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                <td>${name}</td>
+                <td>${price}</td>
+                <td>${qty}</td>
+                <td>${total}</td>
+                <td >
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Remove</button>
+                </td>
+            `;
+
+                tbody.appendChild(tr);
+
+                document.getElementById("ProductAdd").value = "";
+                document.getElementById("Price").value = "";
+                document.getElementById("Quantity").value = "";
+                document.getElementById("TotalAmount").value = "";
+            }
+
+           // function editRow(btn) {
+
+           //      currentTR = btn.parentElement.parentElement;
+
+           //      let name = currentTR.children[0].textContent;
+           //      let price = currentTR.children[1].textContent;
+           //      let qty = currentTR.children[2].textContent;
+
+           //      document.getElementById("editName").value = name;
+           //      document.getElementById("editPrice").value = price;
+           //      document.getElementById("editQty").value = qty;
+
+           //      document.getElementById("editPopup").style.display = "block";
+           //  }
+
+            function deleteRow(btn) {
+                btn.parentElement.parentElement.remove();
+            }
+
+
+        document.getElementById("Price").addEventListener("input", calculateTotal);
+        document.getElementById("Quantity").addEventListener("input", calculateTotal);
+
+        function calculateTotal(){
+                    let Quantity = document.getElementById("Quantity").value || 0 ;
+                    let Price = document.getElementById("Price").value || 0 ;
+
+                    document.getElementById("TotalAmount").value = Quantity * Price ;
+        }
+
+            // function saveEdit() {
+
+            //     let name = document.getElementById("editName").value;
+            //     let price = document.getElementById("editPrice").value;
+            //     let qty = document.getElementById("editQty").value;
+
+            //     let total = price * qty;
+
+            //     currentTR.children[0].textContent = name;
+            //     currentTR.children[1].textContent = price;
+            //     currentTR.children[2].textContent = qty;
+            //     currentTR.children[3].textContent = total;
+
+            //     document.getElementById("editPopup").style.display = "none";
+            // }
+
+        // function openEditPopup(li, name, price, qty) {
+        //     currentLI = li;
+
+        //     document.getElementById("editName").value = name;
+        //     document.getElementById("editPrice").value = price;
+        //     document.getElementById("editQty").value = qty;
+
+        //     document.getElementById("editPopup").style.display = "block";
+        // }
+
+        // function closeEdit() {
+        //     document.getElementById("editPopup").style.display = "none";
+        // }
+
+    </script>
+
+}

@@ -1,0 +1,168 @@
+﻿@model InvoiceApplication.Models.Invoice_Table
+@* @model InvoiceApplication.Models.InvoiceProduct *@
+
+
+@{
+    ViewData["Title"] = "DetailInvoice";
+}
+
+<div class="d-flex justify-content-end gap-3 my-3">
+    <a asp-action="EditInvoice" asp-route-id="@Model?.Invoice_Number" class="btn btn-success">Edit Invoice</a>
+    <a asp-action="Index" class="btn btn-primary">Close</a>
+</div>
+<div>
+    <div class="border border-4 p-2">
+        <div class="d-flex justify-content-between">
+            <div id="logo">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj3pdj-zB2d6hgRSNL4HueqCVAzC1s8DBNqg&s" height="100px" width="200px" />
+            </div>
+            <div class="align-content-center">
+                <h1 class="font-monospace">Order Bill </h1>
+
+            </div>
+            <div class="text-end align-content-center">
+                <b class="text-black-50"> Date : @Html.DisplayFor(model => model.Invoice_Date)</b>
+            </div>
+        </div>
+        <hr />
+
+        <div class="d-flex  justify-content-between ">
+            <div>
+                From <br />
+                <strong>@Html.DisplayFor(model => model.Billing_Name)</strong><br />
+                @Html.DisplayFor(model => model.BillingAddress_Address)<br />
+                @Html.DisplayFor(model => model.BillingAddress_City),&nbsp;@Html.DisplayFor(model => model.BillingAddress_State)<br />
+                Phone (@Html.DisplayFor(model => model.BillingAddress_Phone))
+            </div>
+            <div>
+                To <br />
+                <strong>@Html.DisplayFor(model => model.Shipping_Name)</strong><br />
+                @Html.DisplayFor(model => model.ShippingAddress_Address)<br />
+                @Html.DisplayFor(model => model.ShippingAddress_City),&nbsp;@Html.DisplayFor(model => model.ShippingAddress_State)<br />
+                Phone (@Html.DisplayFor(model => model.ShippingAddress_Phone))
+            </div>
+            <div class="align-content-center">
+                <strong>InvoiceNumber</strong> : #@Html.DisplayFor(model => model.Invoice_Number)<br />
+                <strong>Payment Due</strong>: @Html.DisplayFor(model => model.Invoice_Date_Plus20)
+            </div>
+        </div>
+        <div>
+            <table class="table table-bordered mt-4 table-striped">
+                <thead>
+                    <tr>
+                        <th>Qty</th>
+                        <th>Product Name</th>
+                        <th>Serial #</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.Products != null && Model.Products.Count > 0)
+                    {
+                        int i = 1;
+                        foreach (var p in Model.Products)
+                        {
+                            <tr>
+                                <td>+@p.Qty</td>
+                                <td>@p.Name</td>
+                                <td>@p.Detail_Id</td>
+                                <td>@p.Price</td>
+                                <td>₹&nbsp;@p.Total</td>
+                            </tr>
+
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-danger">
+                                No Products Found
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex gap-2">
+            <div class="w-50 p-2 border border-2">
+                <div class="text-start ">
+                    <h4>Payment Methods :</h4>
+                </div>
+                <div>
+                    <img src="https://adminlte.io/themes/AdminLTE/dist/img/credit/visa.png" />
+                    <img src="https://adminlte.io/themes/AdminLTE/dist/img/credit/mastercard.png" />
+                    <img src="https://adminlte.io/themes/AdminLTE/dist/img/credit/american-express.png" />
+                    <img src="https://adminlte.io/themes/AdminLTE/dist/img/credit/paypal2.png" />
+                </div>
+                <div class="my-2 border border-1 rounded bg-black bg-opacity-25">
+                    <div class="p-2">
+                        <i>
+                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles
+                            , weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                            jajah plickers sifteo edmodo ifttt zimbra.
+                        </i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-50 p-2 border border-2">
+                <h4 class="" style="font-weight :   300">Amount Due <i>@Html.DisplayFor(model => model.Invoice_Date_Plus20)</i></h4>
+                @{
+                    decimal subtotal = Model.Products.Sum(x => x.Total ?? 0);
+                    decimal tax = Math.Round(subtotal * 0.09m, 2);
+                    decimal charge = 0;
+                    if (subtotal > 0)
+                    {
+                        charge = 50;
+                    }
+                    decimal finalTotal = subtotal + tax + charge;
+                }
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Subtotal</th>
+                        <td>₹@subtotal</td>
+                    </tr>
+                    <tr>
+                        <th>Tax (9.3%)</th>
+                        <td>₹@tax</td>
+                    </tr>
+                    <tr>
+                        <th>Shipping:</th>
+                        <td>₹@charge</td>
+                    </tr>
+                    <tr>
+                        <th>Total:</th>
+                        <td class="bg-warning bg-opacity-25">₹@finalTotal</td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="mt-3">
+    @if(@finalTotal > 0 ){
+    <a href="/Invoice/CreateCheckoutSession?invoiceId=@Model.Invoice_Number"
+       class="btn btn-success btn-lg w-100">
+        Pay Now (₹@finalTotal)
+        </a>
+    }
+    else
+    {
+       <div class="text-center" >
+           <b class="text-danger monospace">There Is No Products In Invoice</b>
+       </div>
+    }
+</div>
+
+
+
+
+
+
+
