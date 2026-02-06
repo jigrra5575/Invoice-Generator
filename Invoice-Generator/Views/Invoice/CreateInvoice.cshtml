@@ -1,4 +1,4 @@
-@model InvoiceApplication.Models.Invoice_Table
+﻿@model InvoiceApplication.Models.Invoice_Table
 
 @{
     ViewData["Title"] = "CreateInvoice";
@@ -7,6 +7,33 @@
 <style>
     .bigbutton:hover {
         transform: scale(0.95);
+    }
+
+    .modal-dialog {
+        max-width: 700px !important;
+    }
+
+    .modal-backdrop-custom {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1040;
+    }
+
+    .modal.show.d-block {
+        z-index: 1050;
+    }
+
+    #currenttime{
+        width: 102px;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+    }
     }
 </style>
 
@@ -19,20 +46,23 @@
 
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 {
+    <div class="modal-backdrop-custom"></div>
+
     <div class="modal fade show d-block" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
+        <div class="modal-dialog" >
+            <div class="modal-content bg-gradient">
+                <div class="modal-header bg-danger">
                     <h5>Error</h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-danger">
                     @ViewBag.ErrorMessage
                     <br />
-                    <input id="currenttime" readonly class="form-control mt-2" />
+                    <input id="currenttime" readonly class="form-control my-2 " />
+                    <a asp-action="CreateInvoice" class="btn btn-primary my-3">Close</a>
                 </div>
-                <div class="modal-footer">
-                    <a asp-action="CreateInvoice" class="btn btn-secondary">Close</a>
-                </div>
+                @* <div class="modal-footer ">
+                   
+                </div> *@
             </div>
         </div>
     </div>
@@ -149,7 +179,8 @@
                 };
             }
 
-            load(BillState); load(ShipState);
+            load(BillState);
+            load(ShipState);
             bind(BillState,BillCity);
             bind(ShipState,ShipCity);
         });
@@ -166,7 +197,7 @@
                     <td>${Price.value}</td>
                     <td>${Quantity.value}</td>
                     <td>${TotalAmount.value}</td>
-                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger btn-sm">X</button></td>
+                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger btn-sm">Remove</button></td>
                 </tr>`
             );
             ProductAdd.value=Price.value=Quantity.value=TotalAmount.value="";
